@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="004-create-reservation-approvals" author="sale">
+        <createTable tableName="reservation_approvals">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="reservation_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="decided_by_user_id" type="BIGINT"/>
+
+            <column name="decision" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="comment" type="TEXT"/>
+
+            <column name="decided_at" type="DATETIME"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="reservation_approvals"
+                baseColumnNames="reservation_id"
+                referencedTableName="reservations"
+                referencedColumnNames="id"
+                constraintName="fk_reservation_approvals_reservation"/>
+
+        <addForeignKeyConstraint
+                baseTableName="reservation_approvals"
+                baseColumnNames="decided_by_user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_reservation_approvals_decided_by_user"/>
+
+        <createIndex tableName="reservation_approvals" indexName="idx_res_approvals_reservation_id">
+            <column name="reservation_id"/>
+        </createIndex>
+
+        <createIndex tableName="reservation_approvals" indexName="idx_res_approvals_decided_by_user_id">
+            <column name="decided_by_user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
